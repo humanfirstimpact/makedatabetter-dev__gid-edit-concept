@@ -2,10 +2,10 @@
 
 A data component to create concept
 
-    <gid-create-concept user='1' conceptId='10002' concept='{{concept}}'>
-    </<gid-create-concept>
+    <gid-edit-concept user='1' conceptId='10002' concept='{{concept}}'>
+    </gid-edit-concept>
     
-The properties 'concept' and 'user' are mandatory.
+The properties 'concept', 'conceptId' and 'user' are mandatory.
 
 API endpoint:
 
@@ -21,23 +21,23 @@ Input:
 
 Sample Input: (as JSON payload)
 
-	    {
-        "concept": {
-          "label" : "Domain Name",
-          "applications":["app-id-1","app-id-2"],
-          "lob" : "lob-id",
-          "impactArea" : [
-            { 
-              "id": "impact-area-id-1",
-              "label": "impact-area-label-1",
-            },
-            { 
-              "id": "impact-area-id-2",
-              "label": "impact-area-label-3",
-            }
-          ],
-          "owner" : "user-id" 
-        }	        
+	{
+		"concept": {
+		  "label" : "Domain Name",
+		  "applications":["app-id-1","app-id-2"],
+		  "lob" : "lob-id",
+		  "impactArea" : [
+		    { 
+		      "id": "impact-area-id-1",
+		      "label": "impact-area-label-1",
+		    },
+		    { 
+		      "id": "impact-area-id-2",
+		      "label": "impact-area-label-3",
+		    }
+		  ],
+		  "owner" : "user-id" 
+		}	        
 	    }
 	
 Output:
