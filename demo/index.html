@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+
+    <title>gid edit concept</title>
+
+    <link rel="import" href="../gid-edit-concept.html">
+    <style>
+	  	
+  	</style>
+</head>
+<body unresolved>
+<h1>Curate Concept</h1>
+
+<div class="horizontal-section-container">
+    <template is="dom-bind" id="app">
+    
+        <gid-edit-concept  api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        label='id_832' applications = '["100237", "100267"]' lob = '100001'
+        impact-area = ' [{"id": "120003","label": "impact-area-label-1"},{"id": "120001","label": "impact-area-label-3"}]' 
+    	user='111002' concept ='832' edit = true response='{{response}}'>
+        </gid-edit-concept>
+        
+        <template is="dom-if" if="[[isConcepteditd]]">
+            <div class="horizontal-section">
+                <p>The editd concept is &nbsp; {{response.label}}</p>
+            </div>
+        </template>
+        <template is="dom-if" if="![[isConcepteditd]]">
+            <div class="horizontal-section">
+                <p>{{response.label}} &nbsp; {{response.message}}</p>
+            </div>
+        </template>
+    </template>
+</div>
+
+<script>
+    var app = document.querySelector('#app');
+
+
+</script>
+</body>
+</html>

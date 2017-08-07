@@ -1,0 +1,191 @@
+<!--
+  Wrapper component for concepts
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-edit-concept`
+
+The `gid-edit-concept` element is a data component acting as a wrapper  on gid-api used for handling rest calls for
+editing a particular concept.
+
+<gid-edit-concept  api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+label='id_832' applications = '["100237", "100267"]' lob = '100001'
+impact-area = ' [{"id": "120003","label": "impact-area-label-1"},{"id": "120001","label": "impact-area-label-3"}]' 
+user='111002' edit = true response='{{response}}'>
+</gid-edit-concept>
+        
+ 
+The fields 'concept', 'user' and 'edit' are  mandatory.
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-edit-concept">
+  <template>
+          <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+         <!-- fetch concept details -->	
+			<gid-api auto=false
+				method="POST" api-url={{editConceptUrl}} response='{{editConceptResponse}}'
+				api-timeout={{editConceptTimeout}} api-params={{editConceptParams}} request-body={{editConceptRequestBody}}>
+		    </gid-api>			
+	    <!-- fetch concept details -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-edit-concept',
+        properties:{
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	 	editConceptUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	 	editConceptTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    editConceptResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : 'editConceptResponseChanged'
+        	  	},
+        	  	editConceptParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+	     	   	editConceptRequestBody : {
+	     	   		type: Object,
+	     	   		notify : true
+	 	   	    },
+	 	   	    response: {
+     	          type: Object,
+     	          value: {},
+     	          notify: true
+     	        },
+     	       	paramsArr: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: ["label", "applications", "lob", "impactArea", "owner"]
+                },
+                paramsObj: {
+            	   type: Array,
+	           	   notify: true,
+	           	   value: {}
+                },
+     	      	label: {
+	           	   type: String,
+	           	   notify: true,
+	           	   value: ''
+              	},
+              	applications: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+              	},
+              	lob: {
+	           	   type: String,
+	           	   notify: true,
+	           	   value: ''
+              	},
+              	impactArea: {
+	           	   type: Array,
+	           	   notify: true,
+	           	   value: []
+              	},
+              	owner: {
+	           	   type: String,
+	           	   notify: true,
+	           	   value: ''
+              	},
+              	user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true
+     	        },
+     	        concept: {
+     	        	type: String,
+     	        	value: '',
+     	        	notify: true
+     	        },
+                path: {
+               	   type: String,
+                   notify: true,
+                   value: '',
+                   observer: 'pathReceived'
+                },
+                apiEntity: {
+               	   type: String,
+                   notify: true,
+                   private: true
+                },
+                edit: {
+                	type: Boolean,
+             		notify: true,
+             		value: false,
+             		observer: 'editConcept'
+                }
+               
+        },
+        editConceptResponseChanged : function(newvalue, oldvalue){
+          this.response = [];
+	          if(newvalue != null){
+		             this.async(function() {
+		         		this.response =  newvalue.concept;
+		         		console.log(this.response);
+		   		 	          }, 500);
+	          }
+         	
+         },
+         editConcept: function () {
+        	 if (this.edit) {
+        		this.owner =  this.user;
+        	 	if (!this.apiUrl) {
+// 	      			this.editConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	                this.editConceptTimeout =  this.editConceptTimeout - 1;
+      			}
+        		else {
+         			this.apiEntity = 'EDIT-CONCEPT';
+         		}
+         	}
+				
+         },
+         pathReceived: function(){
+         	if(this.path){
+         		var res = this.path.split(/{([^}]+)}/);
+         		var obj = {};
+         		for (var i in res) {
+         			if(!res[i].startsWith("/")){
+         					if(this[res[i]]){
+         						res[i] = this[res[i]];
+         					}
+         			}
+         		}
+       			this.editConceptUrl = this.apiUrl + res.join("");
+                for (var i in this.paramsArr){
+                	if(this[this.paramsArr[i]]){
+                		obj[this.paramsArr[i]]= this[this.paramsArr[i]];;
+                		}
+                	
+                }
+                this.paramsObj["concept"] =  obj;
+       			this.editConceptRequestBody = this.paramsObj;
+       			this.editConceptTimeout =  this.editConceptTimeout - 1;
+         		
+         	}
+         }
+      });
+    })();
+  </script>
+</dom-module>
