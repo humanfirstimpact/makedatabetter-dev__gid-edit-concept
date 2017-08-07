@@ -30,14 +30,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     	user='111002' concept ='832' edit = true response='{{response}}'>
         </gid-edit-concept>
         
-        <template is="dom-if" if="[[isConcepteditd]]">
+        <template is="dom-if" if="[[response]]">
             <div class="horizontal-section">
-                <p>The editd concept is &nbsp; {{response.label}}</p>
-            </div>
-        </template>
-        <template is="dom-if" if="![[isConcepteditd]]">
-            <div class="horizontal-section">
-                <p>{{response.label}} &nbsp; {{response.message}}</p>
+                <p>{{response.id}}</p>
             </div>
         </template>
     </template>
