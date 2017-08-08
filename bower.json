@@ -1,6 +1,6 @@
 {
-  "name": "gid-curate-concept",
-  "main": "gid-curate-concept.html",
+  "name": "gid-edit-concept",
+  "main": "gid-edit-concept.html",
   "authors": [
     "Shreya Bharadwaj"
   ],
@@ -14,6 +14,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
-    "gid-api": "makedatabetter-dev/gid-api"
+    "gid-api": "makedatabetter-dev/gid-api",
+	"gid-edit-concept": "makedatabetter-dev/gid-edit-concept"
   }
 }
