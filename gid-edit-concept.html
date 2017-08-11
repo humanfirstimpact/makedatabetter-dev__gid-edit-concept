@@ -176,6 +176,8 @@ Output:
         },
         editConceptResponseChanged : function(newvalue, oldvalue){
           this.response = [];
+		  this.apiEntity = '';
+          this.path = '';
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue.concept;
@@ -188,7 +190,7 @@ Output:
         	 if (this.edit) {
         		this.owner =  this.user;
         	 	if (!this.apiUrl) {
-// 	      			this.editConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	      			this.editConceptUrl = this.importPath + 'assets/json/edit-concept.json';
 // 	                this.editConceptTimeout =  this.editConceptTimeout - 1;
       			}
         		else {
