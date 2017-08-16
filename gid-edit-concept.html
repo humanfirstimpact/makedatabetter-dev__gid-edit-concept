@@ -52,7 +52,8 @@ Output:
          <!-- fetch concept details -->	
 			<gid-api auto=false
 				method="POST" api-url={{editConceptUrl}} response='{{editConceptResponse}}'
-				api-timeout={{editConceptTimeout}} api-params={{editConceptParams}} request-body={{editConceptRequestBody}}>
+				api-params={{editConceptParams}} api-token={{editConceptToken}}
+				request-body={{editConceptRequestBody}} api-timeout={{editConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -63,6 +64,11 @@ Output:
       Polymer({
         is:'gid-edit-concept',
         properties:{
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
@@ -86,6 +92,10 @@ Output:
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
+     	   		editConceptToken: {
+	            	type: String,
+	                notify: true
+	            },
 	     	   	editConceptRequestBody : {
 	     	   		type: Object,
 	     	   		notify : true
@@ -202,6 +212,9 @@ Output:
                 	
                 }
                 this.paramsObj["domain"] =  obj;
+                if(this.apiToken){
+       				this.editConceptToken =  this.apiToken;
+       			}
        			this.editConceptRequestBody = this.paramsObj;
        			this.editConceptTimeout =  this.editConceptTimeout - 1;
          		
