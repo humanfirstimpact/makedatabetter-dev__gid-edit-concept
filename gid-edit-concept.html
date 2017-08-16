@@ -18,41 +18,26 @@ If 'apiUrl' is not provided, then the component would fetch sample data from moc
 
 API endpoint:
 
-    PUT /concepts/{id}
+    PUT /domains/{id}
 
 Input:
 
 - Label of the concept
-- List of applications
 - LOB Id
-- User Id
-- List of impact Area
 
 Sample Input: (as JSON payload)
 
 	{
-			"concept": {
+			"domain": {
 			  "label" : "Domain Name",
-			  "applications":["app-id-1","app-id-2"],
-			  "lob" : "lob-id",
-			  "impactArea" : [
-			    { 
-			      "id": "impact-area-id-1",
-			      "label": "impact-area-label-1",
-			    },
-			    { 
-			      "id": "impact-area-id-2",
-			      "label": "impact-area-label-3",
-			    }
-			  ],
-			  "owner" : "user-id" 
+			  "lobs" : ["lob-id"] 
 			}	        
-	    }
+	}
 	
 Output:
 
       {
-        "concept" : {"id":"concept-id"}
+        "domain" : {"id":"domain-id"}
       }
 
 
@@ -217,7 +202,7 @@ Output:
                 		}
                 	
                 }
-                this.paramsObj["concept"] =  obj;
+                this.paramsObj["domain"] =  obj;
        			this.editConceptRequestBody = this.paramsObj;
        			this.editConceptTimeout =  this.editConceptTimeout - 1;
          		
