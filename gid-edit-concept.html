@@ -51,7 +51,8 @@ Output:
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-				method="POST" api-url={{editConceptUrl}} response='{{editConceptResponse}}'
+				method="POST" api-url={{editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
+				response='{{editConceptResponse}}'
 				api-params={{editConceptParams}} api-token={{editConceptToken}}
 				request-body={{editConceptRequestBody}} api-timeout={{editConceptTimeout}}>
 		    </gid-api>			
@@ -108,7 +109,7 @@ Output:
      	       	paramsArr: {
 	           	   type: Array,
 	           	   notify: true,
-	           	   value: ["label", "applications", "lob", "impactArea", "owner"]
+	           	   value: ["label", "applications", "lobs", "impactAreas", "owner"]
                 },
                 paramsObj: {
             	   type: Array,
@@ -125,12 +126,12 @@ Output:
 	           	   notify: true,
 	           	   value: []
               	},
-              	lob: {
-	           	   type: String,
+              	lobs: {
+	           	   type: Array,
 	           	   notify: true,
-	           	   value: ''
+	           	   value: []
               	},
-              	impactArea: {
+              	impactAreas: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: []
@@ -212,7 +213,7 @@ Output:
                 		}
                 	
                 }
-                this.paramsObj["domain"] =  obj;
+                this.paramsObj["domain"] =  JSON.stringify(obj);
                 if(this.apiToken){
        				this.editConceptToken =  this.apiToken;
        			}
