@@ -13,36 +13,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>gid edit concept</title>
 
-    <link rel="import" href="../gid-edit-concept.html">
+    <link rel="import" href="edit-concept.html">
     <style>
 	  	
   	</style>
 </head>
 <body unresolved>
-<h1>Edit Concept</h1>
-
-<div class="horizontal-section-container">
-    <template is="dom-bind" id="app">
-    
-        <gid-edit-concept  api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        label='id_832' applications = '["100237", "100267"]' lobs = '["100001"]'
-        impact-areas = ' [{"id": "120003","label": "impact-area-label-1"},{"id": "120001","label": "impact-area-label-3"}]' 
-    	user='111002' concept ='832' api-token = 'VVNfMjItMzg0MjY1N18xMTA1MTY0MzI5NzY0MTUwMjQ1MTUxMTQ1MzI3MDFY'
-    	edit = true response='{{response}}'>
-        </gid-edit-concept>
-        
-        <template is="dom-if" if="[[response]]">
-            <div class="horizontal-section">
-                <p>{{response.id}}</p>
-            </div>
-        </template>
-    </template>
-</div>
-
+	<edit-concept></edit-concept>
 <script>
-    var app = document.querySelector('#app');
-
-
 </script>
 </body>
 </html>

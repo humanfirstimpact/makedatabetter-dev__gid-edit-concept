@@ -46,13 +46,13 @@ Output:
 <dom-module id="gid-edit-concept">
   <template>
           <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-				method="POST" api-url={{editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
-				response='{{editConceptResponse}}'
+				method="PUT" api-url={{editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
+				response='{{editConceptResponse}}' error = '{{editConceptError}}'
 				api-params={{editConceptParams}} api-token={{editConceptToken}}
 				request-body={{editConceptRequestBody}} api-timeout={{editConceptTimeout}}>
 		    </gid-api>			
@@ -87,8 +87,13 @@ Output:
         	    editConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'editConceptResponseChanged'
+	     	  		observer : 'editConceptResponseReceived'
         	  	},
+        	  	editConceptError : {
+		 	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	observer : 'editConceptErrorReceived'
+	 	   		},
         	  	editConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
@@ -99,6 +104,7 @@ Output:
 	            },
 	     	   	editConceptRequestBody : {
 	     	   		type: Object,
+	     	   		value: {},
 	     	   		notify : true
 	 	   	    },
 	 	   	    response: {
@@ -151,6 +157,11 @@ Output:
      	        	value: '',
      	        	notify: true
      	        },
+     	        pathKey: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
                 path: {
                	   type: String,
                    notify: true,
@@ -170,11 +181,8 @@ Output:
                 }
                
         },
-        editConceptResponseChanged : function(newvalue, oldvalue){
-          this.response = [];
-		  this.apiEntity = '';
-          this.path = '';
-		  this.edit = false;
+        editConceptResponseReceived : function(newvalue, oldvalue){
+        	this.reset();
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue.domain;
@@ -182,6 +190,20 @@ Output:
 	          }
          	
          },
+         editConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this.reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+		 reset: function(){
+			 this.response = [];
+			 this.apiEntity = '';
+	         this.path = '';
+			 this.edit = false;
+		 },
          editConcept: function () {
         	 if (this.edit) {
         		this.owner =  this.user;
@@ -190,6 +212,7 @@ Output:
 // 	                this.editConceptTimeout =  this.editConceptTimeout - 1;
       			}
         		else {
+        			this.pathKey =  'default';
          			this.apiEntity = 'EDIT-CONCEPT';
          		}
          	}
@@ -207,17 +230,17 @@ Output:
          			}
          		}
        			this.editConceptUrl = this.apiUrl + res.join("");
-                for (var i in this.paramsArr){
+       			for (var i in this.paramsArr){
                 	if(this[this.paramsArr[i]]){
                 		obj[this.paramsArr[i]]= this[this.paramsArr[i]];;
                 		}
                 	
                 }
-                this.paramsObj["domain"] =  JSON.stringify(obj);
+                this.paramsObj["domain"] =  obj;
                 if(this.apiToken){
        				this.editConceptToken =  this.apiToken;
        			}
-       			this.editConceptRequestBody = this.paramsObj;
+       			this.editConceptRequestBody["definition"] = JSON.stringify(this.paramsObj);
        			this.editConceptTimeout =  this.editConceptTimeout - 1;
          		
          	}
