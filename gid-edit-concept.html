@@ -9,10 +9,14 @@
 
 A data component to create concept
 
-    <gid-edit-concept user='1' conceptId='10002' concept='{{concept}}'>
+    <gid-edit-concept user='1' concept='10002' edit=true response='{{response}}'>
     </gid-edit-concept>
     
-The properties 'concept', 'conceptId' and 'user' are mandatory.
+The properties 'edit', 'conceptId' and 'user' are mandatory.
+
+The field 'edit' needs to be set to 'true' in order to edit a concept.
+
+The field 'response' returns the response provided by the rest call.
 
 If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
 
