@@ -9,10 +9,14 @@
 
 A data component to create concept
 
-    <gid-edit-concept user='1' conceptId='10002' concept='{{concept}}'>
+    <gid-edit-concept user='1' concept='10002' edit=true response='{{response}}'>
     </gid-edit-concept>
     
-The properties 'concept', 'conceptId' and 'user' are mandatory.
+The properties 'edit', 'conceptId' and 'user' are mandatory.
+
+The field 'edit' needs to be set to 'true' in order to edit a concept.
+
+The field 'response' returns the response provided by the rest call.
 
 If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
 
@@ -46,13 +50,15 @@ Output:
 <dom-module id="gid-edit-concept">
   <template>
           <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-				method="POST" api-url={{editConceptUrl}} response='{{editConceptResponse}}'
-				api-timeout={{editConceptTimeout}} api-params={{editConceptParams}} request-body={{editConceptRequestBody}}>
+				method="PUT" api-url={{editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
+				response='{{editConceptResponse}}' error = '{{editConceptError}}'
+				api-params={{editConceptParams}} api-token={{editConceptToken}}
+				request-body={{editConceptRequestBody}} api-timeout={{editConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -63,6 +69,11 @@ Output:
       Polymer({
         is:'gid-edit-concept',
         properties:{
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
@@ -80,14 +91,24 @@ Output:
         	    editConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'editConceptResponseChanged'
+	     	  		observer : 'editConceptResponseReceived'
         	  	},
+        	  	editConceptError : {
+		 	   		type: String,
+	 	   	    	notify: true,
+	 	   	    	observer : 'editConceptErrorReceived'
+	 	   		},
         	  	editConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
+     	   		editConceptToken: {
+	            	type: String,
+	                notify: true
+	            },
 	     	   	editConceptRequestBody : {
 	     	   		type: Object,
+	     	   		value: {},
 	     	   		notify : true
 	 	   	    },
 	 	   	    response: {
@@ -98,7 +119,7 @@ Output:
      	       	paramsArr: {
 	           	   type: Array,
 	           	   notify: true,
-	           	   value: ["label", "applications", "lob", "impactArea", "owner"]
+	           	   value: ["label", "applications", "lobs", "impactAreas", "owner"]
                 },
                 paramsObj: {
             	   type: Array,
@@ -115,12 +136,12 @@ Output:
 	           	   notify: true,
 	           	   value: []
               	},
-              	lob: {
-	           	   type: String,
+              	lobs: {
+	           	   type: Array,
 	           	   notify: true,
-	           	   value: ''
+	           	   value: []
               	},
-              	impactArea: {
+              	impactAreas: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: []
@@ -140,6 +161,11 @@ Output:
      	        	value: '',
      	        	notify: true
      	        },
+     	        pathKey: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
                 path: {
                	   type: String,
                    notify: true,
@@ -159,24 +185,38 @@ Output:
                 }
                
         },
-        editConceptResponseChanged : function(newvalue, oldvalue){
-          this.response = [];
+        editConceptResponseReceived : function(newvalue, oldvalue){
+        	this.reset();
 	          if(newvalue != null){
 		             this.async(function() {
-		         		this.response =  newvalue.concept;
-		         		console.log(this.response);
+		         		this.response =  newvalue.domain;
 		   		 	          }, 500);
 	          }
          	
          },
+         editConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this.reset();
+	        	if(newvalue !== null){
+	        		this.async(function() {
+		         		this.response =  newvalue.response;
+		   		 	          }, 500);
+	        	}
+	     },
+		 reset: function(){
+			 this.response = [];
+			 this.apiEntity = '';
+	         this.path = '';
+			 this.edit = false;
+		 },
          editConcept: function () {
         	 if (this.edit) {
         		this.owner =  this.user;
         	 	if (!this.apiUrl) {
-// 	      			this.editConceptUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+// 	      			this.editConceptUrl = this.importPath + 'assets/json/edit-concept.json';
 // 	                this.editConceptTimeout =  this.editConceptTimeout - 1;
       			}
         		else {
+        			this.pathKey =  'default';
          			this.apiEntity = 'EDIT-CONCEPT';
          		}
          	}
@@ -194,14 +234,17 @@ Output:
          			}
          		}
        			this.editConceptUrl = this.apiUrl + res.join("");
-                for (var i in this.paramsArr){
+       			for (var i in this.paramsArr){
                 	if(this[this.paramsArr[i]]){
                 		obj[this.paramsArr[i]]= this[this.paramsArr[i]];;
                 		}
                 	
                 }
-                this.paramsObj["concept"] =  obj;
-       			this.editConceptRequestBody = this.paramsObj;
+                this.paramsObj["domain"] =  obj;
+                if(this.apiToken){
+       				this.editConceptToken =  this.apiToken;
+       			}
+       			this.editConceptRequestBody["definition"] = JSON.stringify(this.paramsObj);
        			this.editConceptTimeout =  this.editConceptTimeout - 1;
          		
          	}

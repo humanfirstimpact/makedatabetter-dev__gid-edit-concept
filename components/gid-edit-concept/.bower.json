@@ -1,6 +1,6 @@
 {
-  "name": "gid-curate-concept",
-  "main": "gid-curate-concept.html",
+  "name": "gid-edit-concept",
+  "main": "gid-edit-concept.html",
   "authors": [
     "Shreya Bharadwaj"
   ],
@@ -17,11 +17,11 @@
     "gid-api": "makedatabetter-dev/gid-api"
   },
   "homepage": "https://github.com/makedatabetter-dev/gid-edit-concept",
-  "_release": "aa8f22fd87",
+  "_release": "b664e50349",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "aa8f22fd879932ab023fb4bee49a270e8fd24a29"
+    "commit": "b664e503493cdbf33995e4fc59c3311004c960b9"
   },
   "_source": "https://github.com/makedatabetter-dev/gid-edit-concept.git",
   "_target": "*",

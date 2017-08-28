@@ -1,0 +1,49 @@
+<link rel="import" href="../gid-edit-concept.html">
+
+<dom-module id="edit-concept">
+  <template>
+  		<h1>Edit Concept</h1>
+        <gid-edit-concept  api-url='https://srv-34-197-77-167.globalids.com:8443/api/v1'
+        label='Testing' lobs = '["100850160"]'
+    	user='101650301' concept ='-7702396505347769359' api-token = 'MTAxNjUwMzAxMTUwMzU1NjY3ODU3MDA5MDFY'
+    	edit = true response='{{response}}'>
+        </gid-edit-concept>
+        <template is="dom-if" if="[[isConceptEdited]]">
+            <p>{{response.id}}</p>
+        </template>
+        <template is="dom-if" if="![[isConceptEdited]]">
+            <p>{{response.userMessage}}</p>
+        </template>
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'edit-concept',
+        properties:{
+	 	   	    response: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'responseReceived'
+     	        },
+     	        isConceptEdited: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+         responseReceived: function () {
+        	 if(this.response){	
+				if(this.response.errorCode){
+					this.isConceptEdited = false;
+				}
+				else{
+					this.isConceptEdited =  true;
+				}
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>
