@@ -49,16 +49,16 @@ Output:
 -->
 <dom-module id="gid-edit-concept">
   <template>
-          <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
+          <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
         <!--  fetch entity path -->
         
          <!-- fetch concept details -->	
 			<gid-api auto=false
-				method="PUT" api-url={{editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
+				method="PUT" api-url={{_editConceptUrl}} api-content-type = "application/x-www-form-urlencoded"
 				response='{{editConceptResponse}}' error = '{{editConceptError}}'
-				api-params={{editConceptParams}} api-token={{editConceptToken}}
-				request-body={{editConceptRequestBody}} api-timeout={{editConceptTimeout}}>
+				api-params={{_editConceptParams}} api-token={{_editConceptToken}}
+				request-body={{_editConceptRequestBody}} api-timeout={{_editConceptTimeout}}>
 		    </gid-api>			
 	    <!-- fetch concept details -->
 
@@ -69,124 +69,147 @@ Output:
       Polymer({
         is:'gid-edit-concept',
         properties:{
+        	 	/*Authorization token for accessing rest api*/
 	        	apiToken: {
 	            	type: String,
 	                notify: true,
 	                value : ''
 	            },
+	            /*Base url*/
 	        	apiUrl:{
 	            	type: String,
 	    	        notify: true,
 	    	        value: ''
 	    	 	},
-	    	 	editConceptUrl:{
+	    	 	/*Url sent to gid-api*/
+	    	 	_editConceptUrl:{
                 	type: String,
         	        notify: true
         	 	},
-        	 	editConceptTimeout : {
+        	 	/*Timeout sent to gid-api*/
+        	 	_editConceptTimeout : {
             		type: Number,
         	        notify: true,
         	        value : 0
         	    },
+        	    /*Response sent to gid-api. This is a private property*/
         	    editConceptResponse : {
 	     	  		type : Object,
 	     	  		notify : true,
-	     	  		observer : 'editConceptResponseReceived'
+	     	  		observer : '_editConceptResponseReceived'
         	  	},
+        	  	/*Error sent to gid-api. This is a private property*/
         	  	editConceptError : {
 		 	   		type: String,
 	 	   	    	notify: true,
-	 	   	    	observer : 'editConceptErrorReceived'
+	 	   	    	observer : '_editConceptErrorReceived'
 	 	   		},
-        	  	editConceptParams : {
+	 	   		/*Params sent to gid-api*/
+        	  	_editConceptParams : {
 	     	   		type: String,
 	     	   		notify : true
      	   	    },
-     	   		editConceptToken: {
+     	   		/*Token sent to gid-api*/
+     	   		_editConceptToken: {
 	            	type: String,
 	                notify: true
 	            },
-	     	   	editConceptRequestBody : {
+	            /*Request body sent to gid-api*/
+	     	   	_editConceptRequestBody : {
 	     	   		type: Object,
 	     	   		value: {},
 	     	   		notify : true
 	 	   	    },
+	 	   		/*Object for storing success/error response*/
 	 	   	    response: {
      	          type: Object,
      	          value: {},
      	          notify: true
      	        },
-     	       	paramsArr: {
+     	        /*Array containing properties sent to request body*/
+     	       	_paramsArr: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: ["label", "applications", "lobs", "impactAreas", "owner"]
                 },
-                paramsObj: {
+                /*Temporary object for request body object*/
+                _paramsObj: {
             	   type: Array,
 	           	   notify: true,
 	           	   value: {}
                 },
+                /*Concept Label*/
      	      	label: {
 	           	   type: String,
 	           	   notify: true,
 	           	   value: ''
               	},
+              	/*Array of application ids*/
               	applications: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: []
               	},
+              	/*Array of lob ids*/
               	lobs: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: []
               	},
+              	/*Array of impact areas*/
               	impactAreas: {
 	           	   type: Array,
 	           	   notify: true,
 	           	   value: []
               	},
+              	/*User id is stored here. This is a private property*/
               	owner: {
 	           	   type: String,
 	           	   notify: true,
 	           	   value: ''
               	},
+              	/*User Id*/
               	user: {
      	        	type: String,
      	        	value : '',
      	        	notify :  true
      	        },
+     	        /*Concept Id*/
      	        concept: {
      	        	type: String,
      	        	value: '',
      	        	notify: true
      	        },
-     	        pathKey: {
+     	       /*The api path key*/
+     	       	_pathKey: {
                	   type: String,
                    notify: true,
                    value: ''
                 },
-                path: {
+                /*The api path*/
+                _path: {
                	   type: String,
                    notify: true,
                    value: '',
-                   observer: 'pathReceived'
+                   observer: '_pathReceived'
                 },
-                apiEntity: {
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
                	   type: String,
-                   notify: true,
-                   private: true
+                   notify: true
                 },
+                /*Flag needs to be set to 'true' to edit a concept*/
                 edit: {
                 	type: Boolean,
              		notify: true,
              		value: false,
-             		observer: 'editConcept'
+             		observer: '_editConcept'
                 }
                
         },
-        editConceptResponseReceived : function(newvalue, oldvalue){
-        	this.reset();
+        /* Success response handler */
+        _editConceptResponseReceived : function(newvalue, oldvalue){
+        	this._reset();
 	          if(newvalue != null){
 		             this.async(function() {
 		         		this.response =  newvalue.domain;
@@ -194,37 +217,41 @@ Output:
 	          }
          	
          },
-         editConceptErrorReceived :  function(newvalue, oldvalue){
-   		  	 this.reset();
+         /* Error response handler */
+         _editConceptErrorReceived :  function(newvalue, oldvalue){
+   		  	 this._reset();
 	        	if(newvalue !== null){
 	        		this.async(function() {
 		         		this.response =  newvalue.response;
 		   		 	          }, 500);
 	        	}
 	     },
-		 reset: function(){
+	     /* Reset method */
+		 _reset: function(){
 			 this.response = [];
-			 this.apiEntity = '';
-	         this.path = '';
+			 this._apiEntity = '';
+	         this._path = '';
 			 this.edit = false;
 		 },
-         editConcept: function () {
+		 /* Observer of 'edit' flag */
+         _editConcept: function () {
         	 if (this.edit) {
         		this.owner =  this.user;
         	 	if (!this.apiUrl) {
-// 	      			this.editConceptUrl = this.importPath + 'assets/json/edit-concept.json';
-// 	                this.editConceptTimeout =  this.editConceptTimeout - 1;
+// 	      			this._editConceptUrl = this.importPath + 'assets/json/edit-concept.json';
+// 	                this._editConceptTimeout =  this._editConceptTimeout - 1;
       			}
         		else {
-        			this.pathKey =  'default';
-         			this.apiEntity = 'EDIT-CONCEPT';
+        			this._pathKey =  'default';
+         			this._apiEntity = 'EDIT-CONCEPT';
          		}
          	}
 				
          },
-         pathReceived: function(){
-         	if(this.path){
-         		var res = this.path.split(/{([^}]+)}/);
+         /* Observer for api path */
+         _pathReceived: function(){
+         	if(this._path){
+         		var res = this._path.split(/{([^}]+)}/);
          		var obj = {};
          		for (var i in res) {
          			if(!res[i].startsWith("/")){
@@ -233,19 +260,19 @@ Output:
          					}
          			}
          		}
-       			this.editConceptUrl = this.apiUrl + res.join("");
-       			for (var i in this.paramsArr){
-                	if(this[this.paramsArr[i]]){
-                		obj[this.paramsArr[i]]= this[this.paramsArr[i]];;
+       			this._editConceptUrl = this.apiUrl + res.join("");
+       			for (var i in this._paramsArr){
+                	if(this[this._paramsArr[i]]){
+                		obj[this._paramsArr[i]]= this[this._paramsArr[i]];;
                 		}
                 	
                 }
-                this.paramsObj["domain"] =  obj;
+                this._paramsObj["domain"] =  obj;
                 if(this.apiToken){
-       				this.editConceptToken =  this.apiToken;
+       				this._editConceptToken =  this.apiToken;
        			}
-       			this.editConceptRequestBody["definition"] = JSON.stringify(this.paramsObj);
-       			this.editConceptTimeout =  this.editConceptTimeout - 1;
+       			this._editConceptRequestBody["definition"] = JSON.stringify(this._paramsObj);
+       			this._editConceptTimeout =  this._editConceptTimeout - 1;
          		
          	}
          }
